@@ -1,4 +1,3 @@
-#include <iostream>
 #include <tuple>
 #include "SetsAndGraphs.h"
 
@@ -6,10 +5,15 @@ using namespace std;
 
 ///Множество M, образы которого находятся для соответствий A и B, и интервал его значений.
 Set M;
-const int aM = 75, bM = 85;
+const int aM = 25, bM = 30;
 ///Множество N, прообразы которого находятся для соответствий A и B, и интервал его значений.
 Set N;
-const int aN = 100, bN = 110;
+const int aN = 20, bN = 25;
+///Множество W, на котором задаётся сужение соответствий A и В, и интервалы его значений.
+Set W;
+const int aW = 15, bW = 25;
+///График Z, на котором задаётся продолжение соответствий A и B.
+Graph Z;
 
 ///Объявления типа данных - соответствие.
 typedef tuple<Graph, Set, Set> Accord;
@@ -18,10 +22,10 @@ typedef tuple<Graph, Set, Set> Accord;
 const int graphCardinality = 30;
 
 ///Интервалы значений множеств X, Y, U, V.
-const int aX = 50, bX = 100;
-const int aY = 75, bY = 150;
-const int aU = 80, bU = 100;
-const int aV = 95, bV = 125;
+const int aX = 1, bX = 30;
+const int aY = 20, bY = 40;
+const int aU = 15, bU = 50;
+const int aV = 5, bV = 35;
 
 ///Прототипы используемых функций.
 Accord accordIntersection(Accord, Accord);
@@ -173,7 +177,13 @@ Accord accordInversion(Accord A)
     ///Нахождение инверсии I графика соответствия A
     Graph I;
     I = graphInversion(get<0>(A));
-    get<0>(A) = I;
+    get<0>(E) = I;
+
+    ///Определение области отправления инверсии
+    get<1>(E) = get<2>(A);
+
+    ///Определение области прибытия инверсии
+    get<2>(E) = get<1>(A);
 
     return E;
 }
@@ -223,39 +233,55 @@ Set accordPreimage(Accord A)
     return P;
 }
 
-Accord accordContraction(Accord)
+/** Функция нахождения сужения соответствия A на множестве W.
+ *  Аргумент функции - соответствие А.
+ *  Функция возвращает соответствие S.
+ */
+Accord accordContraction(Accord A)
 {
+    Accord S; ///Выделение памяти под сужение
 
+    ///Нахождения пересечения H графика и декартова произведения множеств W и Y
+    Graph H;
+    H = graphIntersection(get<0>(A), setCartesian(W, get<2>(A)));
+    get<0>(S) = H;
+
+    ///Определение области отправления сужения
+    get<1>(S) = get<1>(A);
+    ///Определение области прибытия сужения
+    get<2>(S) = get<2>(A);
+
+    return S;
 }
 
-Accord accordExtending(Accord)
+/** Функция нахождения продолжения соответствия A на графике Z.
+ *  Аргумент функции - соответствие А.
+ *  Функция возвращает соответствие P.
+ */
+Accord accordExtending(Accord A)
 {
-
-}
-
-
-///Функция корректного считывания с клавиатуры числового значения
-void readInteger(int& number)
-{
-    cin >> number;
-    while (!cin.good())
+    int zSize;
+    cout<<"Введите мощность графика продолжения Z: ";
+    readInteger(zSize);
+    Z.reserve(zSize);
+    cout<<"Введите элементы графика Z: "<<endl;
+    for (int i = 0; i < zSize; i++)
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout<<"Введено некорректное значение. Повторите ввод: ";
-        cin >> number;
+        cout<<"№"<<i+1<<" ";
+        readPair(Z[i]);
     }
-}
+    cout<<endl;
 
-///Функция корректного считывания с клавиатуры пары чисел
-void readPair(pair<int,int>& nPair)
-{
-    int firstComponent;
-    int secondComponent;
-    readInteger(firstComponent);
-    readInteger(secondComponent);
-    nPair.first = firstComponent;
-    nPair.second = secondComponent;
+    Accord P; ///Выделение памяти под продолжение
+
+    ///Определение графика продолжения
+    get<0>(P) = Z;
+    ///Определение области отправления продолжения
+    get<1>(P) = get<1>(A);
+    ///Определение области прибытия продолжения
+    get<2>(P) = get<2>(A);
+
+    return P;
 }
 
 ///Функция вывода на экран соответствия
@@ -324,6 +350,8 @@ void fillSets(Accord& A, Accord& B)
         M.push_back(i);
     for (int j = aN; j <= bN; j++) ///Заполнение множества N
         N.push_back(j);
+    for (int k = aW; k <= bW; k++) ///Заполнение множества W
+        W.push_back(k);
 
     Set& X = get<1>(A);
     Set& Y = get<2>(A);
@@ -384,14 +412,22 @@ int main()
         {
             ///ввод значения с проверкой на повторное вхождение элементов в график
             bool exists;
+            bool proper1 = false, proper2 = false;
             do
             {
                 cout << "Элемент №" << i+1 << " - ";
                 readPair(temp);
                 if (exists = contains(get<0>(A), temp))
-                    cout<<"Элемент уже содержится в графике! Введите другое значение."<<endl;
+                    {
+                        cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
+                        continue;
+                    }
+                if (!(proper1 = contains(get<1>(A), temp.first)))
+                    cout<<"Первая компонента не принадлежит области отправления!"<<endl;
+                if (!(proper2 = contains(get<2>(A), temp.second)))
+                    cout<<"Вторая компонента не принадлежит области прибытия!"<<endl;
             }
-            while (exists);
+            while (exists || !proper1 || !proper2);
             get<0>(A).push_back(temp); ///добавление значения в график
         }
     }
@@ -407,14 +443,22 @@ int main()
         {
             ///ввод значения с проверкой на повторное вхождение элементов в график
             bool exists;
+            bool proper1 = false, proper2 = false;
             do
             {
                 cout << "Элемент №" << i+1 << " - ";
                 readPair(temp);
                 if (exists = contains(get<0>(B), temp))
-                    cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
+                    {
+                        cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
+                        continue;
+                    }
+                if (!(proper1 = contains(get<1>(B), temp.first)))
+                    cout<<"Первая компонента не принадлежит области отправления!"<<endl;
+                if (!(proper2 = contains(get<2>(B), temp.second)))
+                    cout<<"Вторая компонента не принадлежит области прибытия!"<<endl;
             }
-            while (exists);
+            while (exists || !proper1 || !proper2);
             get<0>(B).push_back(temp); ///добавление значения в график
         }
         cout << endl;
@@ -547,7 +591,7 @@ int main()
             deleteAccord(composition);
             break;
         }
-        case 10:
+        case 10: ///если был выбран образ для соответствия A
         {
             ///вызов функции нахождения образа множества M при соответствии A
             Set image = accordImage(A);
@@ -559,7 +603,7 @@ int main()
             deleteVector(image);
             break;
         }
-        case 11:
+        case 11: ///если был выбран прообраз для соответствия A
         {
             ///вызов функции нахождения прообраза множества N при соответствии A
             Set preimage = accordPreimage(A);
@@ -571,7 +615,7 @@ int main()
             deleteVector(preimage);
             break;
         }
-        case 12:
+        case 12: ///если был выбран образ для соответствия A
         {
             ///вызов функции нахождения образа множества M при соответствии B
             Set image = accordImage(B);
@@ -583,7 +627,7 @@ int main()
             deleteVector(image);
             break;
         }
-        case 13:
+        case 13: ///если был выбран прообраз для соответствия B
         {
             ///вызов функции нахождения прообраза множества N при соответствии B
             Set preimage = accordPreimage(B);
@@ -595,20 +639,44 @@ int main()
             deleteVector(preimage);
             break;
         }
-        case 14:
+        case 14: ///если было выбрано сужения соответствия A
         {
+            ///вызов функции нахождения сужения соответствия A
+            Accord contr = accordContraction(A);
+            ///вывод сужения соответствия A на экран
+            printAccord(contr);
+            ///высвобождение памяти из-под сужения
+            deleteAccord(contr);
             break;
         }
-        case 15:
+        case 15: ///если было выбрано продолжение соответствия A
         {
+            ///вызов функции нахождения продолжения соответствия A
+            Accord ext = accordExtending(A);
+            ///вывод продолжения соответствия A на экран
+            printAccord(ext);
+            ///высвобождение памяти из-под продолжения
+            deleteAccord(ext);
             break;
         }
-        case 16:
+        case 16: ///если было выбрано сужения соответствия B
         {
+            ///вызов функции нахождения сужения соответствия B
+            Accord contr = accordContraction(B);
+            ///вывод сужения соответствия A на экран
+            printAccord(contr);
+            ///высвобождение памяти из-под сужения
+            deleteAccord(contr);
             break;
         }
-        case 17:
+        case 17: ///если было выбрано продолжение соответствия B
         {
+            ///вызов функции нахождения продолжения соответствия B
+            Accord ext = accordExtending(B);
+            ///вывод продолжения соответствия B на экран
+            printAccord(ext);
+            ///высвобождение памяти из-под продолжения
+            deleteAccord(ext);
             break;
         }
         case 0: ///если был выбран выход из программы

@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1464114168 source:/home/max/CBProjects/accordance_operations/main.cpp
-	<iostream>
+1464193255 source:/home/max/CBProjects/accordance_operations/main.cpp
 	<tuple>
 	"SetsAndGraphs.h"
 
 1464033743 /home/max/CBProjects/accordance_operations/Sets&Graphs.h
 	<vector>
 
-1464114168 /home/max/CBProjects/accordance_operations/SetsAndGraphs.h
+1464192394 /home/max/CBProjects/accordance_operations/SetsAndGraphs.h
 	<vector>
 	<algorithm>
+	<iostream>
 
-1464114184 source:/home/max/CBProjects/accordance_operations/SetsAndGraphs.cpp
+1464192394 source:/home/max/CBProjects/accordance_operations/SetsAndGraphs.cpp
 	"SetsAndGraphs.h"
 

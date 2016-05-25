@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 ///Объявление типа данных - множество
 typedef std::vector<int> Set;
@@ -21,6 +22,7 @@ Set setIntersection(Set, Set);
 Set setDifference(Set, Set);
 Set setSymDiff(Set, Set);
 Set setUnion(Set, Set);
+Graph setCartesian(Set, Set);
 
 /** Шаблон функции, которая определяет, содержится ли элемент в множестве.
  *  Аргументы функции - множество элементов dset и элемент element.
@@ -35,3 +37,9 @@ bool contains(std::vector<T> dset, T element)
             return true;
     return false;
 }
+
+///Функция корректного считывания с клавиатуры числового значения
+void readInteger(int& number);
+
+///Функция корректного считывания с клавиатуры пары чисел
+void readPair(std::pair<int,int>& nPair);

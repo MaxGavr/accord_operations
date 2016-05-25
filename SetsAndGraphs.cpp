@@ -123,6 +123,31 @@ Set setUnion(Set A, Set B)
     return D;
 }
 
+/** Функция нахождения декартова произведения двух множеств.
+ *  Аргументы функции - два множества: first и second.
+ *  Функция возвращает множество P.
+ */
+Graph setCartesian(Set first, Set second)
+{
+    Graph P; ///выделение памяти под декартово произведение
+
+    if (first.empty() || second.empty()) ///если одно из множеств - пустое
+        {
+            return P; ///возвращаем пустое множество
+        }
+
+    for (size_t i = 0; i < first.size(); i++) ///обход по всем элементам множества first
+        for (size_t j = 0; j < second.size(); j++) ///обход по всем элементам множества second
+            {
+                pair<int, int> newPair(first.at(i), second.at(j)); ///выделение памяти под кортеж, первым элементом которого
+                ///является элемент множества first, а вторым - множества second.
+                if (!contains(P, newPair)) ///если кортеж не содержится в декартовом произведении
+                    P.push_back(newPair);  ///то добавляем его в декартово произведение
+            }
+
+    return P;
+}
+
 ///-------------------------------------------------------------------------------------------
 ///-------------------------------------------------------------------------------------------
 ///-------------------------------------------------------------------------------------------
@@ -290,4 +315,28 @@ Graph graphComposition(Graph A, Graph B)
                 }
         }
     return C;
+}
+
+///Функция корректного считывания с клавиатуры числового значения
+void readInteger(int& number)
+{
+    std::cin >> number;
+    while (!std::cin.good())
+    {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout<<"Введено некорректное значение. Повторите ввод: ";
+        std::cin >> number;
+    }
+}
+
+///Функция корректного считывания с клавиатуры пары чисел
+void readPair(std::pair<int,int>& nPair)
+{
+    int firstComponent;
+    int secondComponent;
+    readInteger(firstComponent);
+    readInteger(secondComponent);
+    nPair.first = firstComponent;
+    nPair.second = secondComponent;
 }
