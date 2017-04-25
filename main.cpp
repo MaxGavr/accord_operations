@@ -285,12 +285,13 @@ Accord accordExtending(Accord A)
 }
 
 ///Функция вывода на экран соответствия
-void printAccord(Accord& acc)
+void printAccord(Accord& acc, string title)
 {
     ///Очистка консоли
     if (system("CLS"))
         system("clear");
 
+    cout<<title<<":"<<endl;
     cout << "-----------------------------------------------------------------" << endl;
     ///Вывод всех элементов графика соответствия
     cout << "График: ";
@@ -418,10 +419,10 @@ int main()
                 cout << "Элемент №" << i+1 << " - ";
                 readPair(temp);
                 if (exists = contains(get<0>(A), temp))
-                    {
-                        cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
-                        continue;
-                    }
+                {
+                    cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
+                    continue;
+                }
                 if (!(proper1 = contains(get<1>(A), temp.first)))
                     cout<<"Первая компонента не принадлежит области отправления!"<<endl;
                 if (!(proper2 = contains(get<2>(A), temp.second)))
@@ -434,7 +435,7 @@ int main()
     else ///иначе, выводим информацию о том, что G - пустой график
         cout << "G - пустой график." << endl << endl;
 
-    printAccord(A);
+    printAccord(A, "Соответствие A");
 
     if(numB != 0) ///если мощность графика F не равна нулю
     {
@@ -449,10 +450,10 @@ int main()
                 cout << "Элемент №" << i+1 << " - ";
                 readPair(temp);
                 if (exists = contains(get<0>(B), temp))
-                    {
-                        cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
-                        continue;
-                    }
+                {
+                    cout<<"Элемент уже содержится в множестве! Введите другое значение."<<endl;
+                    continue;
+                }
                 if (!(proper1 = contains(get<1>(B), temp.first)))
                     cout<<"Первая компонента не принадлежит области отправления!"<<endl;
                 if (!(proper2 = contains(get<2>(B), temp.second)))
@@ -466,7 +467,7 @@ int main()
     else ///иначе, выводим информацию о том, что F - пустой график
         cout << "F - пустой график." << endl << endl;
 
-    printAccord(B);
+    printAccord(B, "Соответствие B");
 
     int choice; ///переменная, отвечающая за выбор пользователя
     while(true) ///бесконечный цикл вывода меню
@@ -506,7 +507,7 @@ int main()
             ///вызов функции нахождения пересечения соответствий
             Accord intersect = accordIntersection(A, B);
             ///вывод пересечения соответствий на экран
-            printAccord(intersect);
+            printAccord(intersect, "Пересечение");
             ///высвобождение памяти из-под пересечения
             deleteAccord(intersect);
             break;
@@ -516,7 +517,7 @@ int main()
             ///вызов функции нахождения объединения соответствий
             Accord un = accordUnion(A, B);
             ///вывод объединения соответствий на экран
-            printAccord(un);
+            printAccord(un, "Объединение");
             ///высвобождение памяти из-под объединения
             deleteAccord(un);
             break;
@@ -526,7 +527,7 @@ int main()
             ///вызов функции нахождения разности соответствий A и B
             Accord differenceAB = accordDifference(A, B);
             ///вывод разности соответствий А и В на экран
-            printAccord(differenceAB);
+            printAccord(differenceAB, "Разность A и B");
             ///высвобождение памяти из-под разности
             deleteAccord(differenceAB);
             break;
@@ -536,7 +537,7 @@ int main()
             ///вызов функции нахождения разности соответствий B и A
             Accord differenceBA = accordDifference(B, A);
             ///вывод разности соответствий В и А на экран
-            printAccord(differenceBA);
+            printAccord(differenceBA, "Разность B и A");
             ///высвобождение памяти из-под разности
             deleteAccord(differenceBA);
             break;
@@ -546,7 +547,7 @@ int main()
             ///вызов функции нахождения симметрической разности соответствий A и B
             Accord symdiff = accordSymDiff(A, B);
             ///вывод симметрической разности соответствий А и В на экран
-            printAccord(symdiff);
+            printAccord(symdiff, "Симметрическая разность");
             ///высвобождение памяти из-под симметрической разности
             deleteAccord(symdiff);
             break;
@@ -556,7 +557,7 @@ int main()
             ///вызов функции нахождения инверсии соответствия A
             Accord inversion = accordInversion(A);
             ///вывод инверсии соответствия А на экран
-            printAccord(inversion);
+            printAccord(inversion, "Инверсия A");
             ///высвобождение памяти из-под инверсии
             deleteAccord(inversion);
             break;
@@ -566,7 +567,7 @@ int main()
             ///вызов функции нахождения инверсии соответствия B и вывод его на экран
             Accord inversion = accordInversion(B);
             ///вывод инверсии соответствия B на экран
-            printAccord(inversion);
+            printAccord(inversion, "Инверсия B");
             ///высвобождение памяти из-под инверсии
             deleteAccord(inversion);
             break;
@@ -576,7 +577,7 @@ int main()
             ///вызов функции нахождения композиции соответствий A и B и вывод её на экран
             Accord composition = accordComposition(A, B);
             ///вывод композиции соответствий А и В на экран
-            printAccord(composition);
+            printAccord(composition, "Композиция A и B");
             ///высвобождение памяти из-под композиции
             deleteAccord(composition);
             break;
@@ -586,7 +587,7 @@ int main()
             ///вызов функции нахождения композиции соответствий B и А
             Accord composition = accordComposition(B, A);
             ///вывод композиции соответствий B и А на экран
-            printAccord(composition);
+            printAccord(composition, "Композиция B и A");
             ///высвобождение памяти из-под композиции
             deleteAccord(composition);
             break;
@@ -596,6 +597,12 @@ int main()
             ///вызов функции нахождения образа множества M при соответствии A
             Set image = accordImage(A);
             ///вывод образа множества M на экран
+            ///Очистка консоли
+            if (system("CLS"))
+                system("clear");
+            cout<<"Образ при соответствии A:"<<endl;
+            if (image.empty())
+                cout<<"---";
             for (const auto i : image)
                 cout<<endl<<i<<" ";
             cout<<endl;
@@ -608,6 +615,12 @@ int main()
             ///вызов функции нахождения прообраза множества N при соответствии A
             Set preimage = accordPreimage(A);
             ///вывод прообраза множества N на экран
+            ///Очистка консоли
+            if (system("CLS"))
+                system("clear");
+            cout<<"Прообраз при соответствии A:"<<endl;
+            if (preimage.empty())
+                cout<<"---";
             for (const auto i : preimage)
                 cout<<endl<<i<<" ";
             cout<<endl;
@@ -620,6 +633,12 @@ int main()
             ///вызов функции нахождения образа множества M при соответствии B
             Set image = accordImage(B);
             ///вывод образа множества M на экран
+            ///Очистка консоли
+            if (system("CLS"))
+                system("clear");
+            cout<<"Образ при соответствии B:"<<endl;
+            if (image.empty())
+                cout<<"---";
             for (const auto i : image)
                 cout<<endl<<i<<" ";
             cout<<endl;
@@ -632,6 +651,12 @@ int main()
             ///вызов функции нахождения прообраза множества N при соответствии B
             Set preimage = accordPreimage(B);
             ///вывод прообраза множества N на экран
+            ///Очистка консоли
+            if (system("CLS"))
+                system("clear");
+            cout<<"Прообраз при соответствии B:"<<endl;
+            if (preimage.empty())
+                cout<<"---";
             for (const auto i : preimage)
                 cout<<endl<<i<<" ";
             cout<<endl;
@@ -644,7 +669,7 @@ int main()
             ///вызов функции нахождения сужения соответствия A
             Accord contr = accordContraction(A);
             ///вывод сужения соответствия A на экран
-            printAccord(contr);
+            printAccord(contr, "Сужение A");
             ///высвобождение памяти из-под сужения
             deleteAccord(contr);
             break;
@@ -654,7 +679,7 @@ int main()
             ///вызов функции нахождения продолжения соответствия A
             Accord ext = accordExtending(A);
             ///вывод продолжения соответствия A на экран
-            printAccord(ext);
+            printAccord(ext, "Продолжение A");
             ///высвобождение памяти из-под продолжения
             deleteAccord(ext);
             break;
@@ -664,7 +689,7 @@ int main()
             ///вызов функции нахождения сужения соответствия B
             Accord contr = accordContraction(B);
             ///вывод сужения соответствия A на экран
-            printAccord(contr);
+            printAccord(contr, "Сужение B");
             ///высвобождение памяти из-под сужения
             deleteAccord(contr);
             break;
@@ -674,7 +699,7 @@ int main()
             ///вызов функции нахождения продолжения соответствия B
             Accord ext = accordExtending(B);
             ///вывод продолжения соответствия B на экран
-            printAccord(ext);
+            printAccord(ext, "Продолжение B");
             ///высвобождение памяти из-под продолжения
             deleteAccord(ext);
             break;
